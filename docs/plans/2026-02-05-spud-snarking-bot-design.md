@@ -174,5 +174,5 @@ python-dotenv>=1.0
 - Bot connection/authentication
 
 ## References
-- Old Spud bot: https://github.com/joemcmahon/mrspiral-spudtest/
-- Oblique Strategies source: https://github.com/joemcmahon/mrspiral-spudtest/blob/master/strategies.yml
+- Old Spud bot: https://github.com/joemcmahon/mrspiral-spudtest/ (removed)
+- Oblique Strategies source: https://github.com/joemcmahon/mrspiral-spudtest/blob/master/strategies.yml (removed)
