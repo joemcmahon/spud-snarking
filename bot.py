@@ -1,11 +1,14 @@
 # bot.py
 """Spud Snarking Bot — Discord personality bot for Radiospiral."""
 
+import logging
 import os
 from pathlib import Path
 
 import discord
 from dotenv import load_dotenv
+
+logger = logging.getLogger("spud")
 
 from handlers import MatchResult, dispatch
 from responses import get_random, load_pool
@@ -31,7 +34,7 @@ client = discord.Client(intents=intents)
 
 @client.event
 async def on_ready():
-    print(f"Spud is lurking as {client.user}")
+    logger.info(f"Spud is lurking as {client.user}")
 
 
 @client.event
@@ -41,16 +44,21 @@ async def on_message(message: discord.Message):
         return
 
     text = message.content
+    bot_name = client.user.display_name.lower() if client.user else "spud"
     is_mentioned = (
         client.user in message.mentions
         or isinstance(message.channel, discord.DMChannel)
+        or bot_name in text.lower()
     )
+
+    logger.debug(f"MSG [{message.channel}] {message.author}: {text!r} (mentioned={is_mentioned})")
 
     result = dispatch(text, is_mentioned)
     if result is None:
         return
 
     response = get_random(POOLS[result])
+    logger.info(f"RESPOND [{result.name}]: {response!r}")
     if response:
         await message.channel.send(response)
 
@@ -60,6 +68,7 @@ def main():
     if not token:
         print("Error: DISCORD_BOT_TOKEN not set in .env")
         raise SystemExit(1)
+    logging.basicConfig(level=logging.DEBUG, format="%(asctime)s %(levelname)-8s %(name)s %(message)s")
     client.run(token)
 
 
